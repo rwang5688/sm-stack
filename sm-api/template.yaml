@@ -8,7 +8,7 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 180
 
 Resources:
   GetFunction:
@@ -43,4 +43,3 @@ Outputs:
     Description: "Implicit IAM Role created for GET function"
     Value: !GetAtt GetFunctionRole.Arn
 
-    
