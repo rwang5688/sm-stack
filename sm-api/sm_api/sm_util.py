@@ -11,21 +11,23 @@ def invoke_endpoint(endpoint_name, message):
     client = boto3.client('sagemaker-runtime')
     
     content_type = "application/json"
-    # must specify "Inputs"
+    # must specify "inputs"
     data = {
         "inputs": message
     }
-
+    print("invoke_endpoint: data: %s" % json.dumps(data, indent=2))
+    
     ie_response = client.invoke_endpoint(
         EndpointName=endpoint_name,
         ContentType=content_type,
         Body=json.dumps(data)
     )
+    # ie_response['Body'] is a byte stream so we can't format it
     print("invoke_endpoint: ie_response: %s" % (ie_response))
 
-    # Body is a byte stream that needs to be read and decoded
+    # ic_response['Body'] is a byte stream so we need to read and decode it
     response = ie_response["Body"].read().decode("utf-8")
-    print("invoke_endpoint: response: %s" %(response))
+    print("invoke_endpoint: response: %s" % json.dumps(response, indent=2))
 
     return(response)
 
