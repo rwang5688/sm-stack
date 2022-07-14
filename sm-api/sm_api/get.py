@@ -36,8 +36,8 @@ def lambda_handler(event, context):
             message = query_string_parameters['message']
     print("message: %s" % (message))
 
-    # replace with the actual endpoint_name
-    endpoint_name = 'distilbert-base-uncased-finetuned-sst-2-english-text-classification-ep-%Y-%m-%d-%H-%M-%S'
+    # replace with your actual endpoint_name
+    endpoint_name = 'distilbert-text-classification-ep-2022-07-14-05-58-59'
     response = sm_util.invoke_endpoint(endpoint_name, message)
     print("response: %s" % json.dumps(response, indent=2))
 
