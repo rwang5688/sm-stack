@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# SAM specific output
+.aws-sam
+samconfig.toml
