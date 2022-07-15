@@ -1,0 +1,6 @@
+torch
+watermark
+transformers
+pytorch-lightning
+colored
+
