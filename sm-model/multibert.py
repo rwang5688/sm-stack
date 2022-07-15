@@ -1,24 +1,49 @@
-import tensorflow as tf
 import argparse
 import os 
-import numpy as np
 import json
-
+#%pip install torch
+#%pip install watermark
+#%pip install transformers
+#%pip install --upgrade pytorch-lightning
+#%pip install colored
+import sys
+import pandas as pd
+import numpy as np
+from tqdm.auto import tqdm
+import torch
+import torchmetrics
+import torch.nn as nn
+from torch.utils.data import Dataset, DataLoader
+from transformers import BertTokenizerFast as BertTokenizer, BertModel, AdamW, get_linear_schedule_with_warmup
+import pytorch_lightning as pl
+from torchmetrics.functional import accuracy, auroc
+from torchmetrics.functional import f1_score
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
+from pytorch_lightning.loggers import TensorBoardLogger
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, multilabel_confusion_matrix
+from pylab import rcParams
+from matplotlib import rc
+import re
+# import predefined functions
+from preprocessing import clean_data
+from preprocessing import split_data
+from create_model import label_cols
+from create_model import create_tokenizer
 
 def model(x_train, y_train, x_test, y_test):
     """Generate a simple model"""
-    model = tf.keras.models.Sequential([
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(1024, activation=tf.nn.relu),
-        tf.keras.layers.Dropout(0.4),
-        tf.keras.layers.Dense(10, activation=tf.nn.softmax)
-    ])
 
-    model.compile(optimizer='adam',
-                  loss='sparse_categorical_crossentropy',
-                  metrics=['accuracy'])
-    model.fit(x_train, y_train)
-    model.evaluate(x_test, y_test)
+    # preprocess data
+    clean_data(df, 'tweet')
+    # split data
+    train_df, val_df = split_data(df)
+    # make list of labeled columns
+    LABEL_COLUMNS = label_cols(df)
+    # create BERT tokenizer
+    tokenizer = create_tokenizer()
+
+    model = tokenizer
 
     return model
 
