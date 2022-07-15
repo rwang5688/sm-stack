@@ -1,6 +1,6 @@
 import tensorflow as tf
 import argparse
-import os
+import os 
 import numpy as np
 import json
 
