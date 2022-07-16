@@ -212,7 +212,6 @@ class TweetTagger(pl.LightningModule):
     
         
 # We simulate 100 training steps and tell the scheduler to warm up for the first 20. The learning rate grows to the initial fixed value of 0.001 during the warm-up and then goes down (linearly) to 0.
-
 # To use the scheduler, we need to calculate the number of training and warm-up steps. The number of training steps per epoch is equal to number of training examples / batch size. The number of total training steps is training steps per epoch * number of epochs:
 
 
@@ -231,9 +230,6 @@ warmup_steps, total_training_steps = warmup_and_totaltraining_steps(train_df)
 
 
 # TRAINING
-
-
-
 def train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module):
 
     
@@ -243,10 +239,7 @@ def train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module):
       n_training_steps=total_training_steps
     )
 
-    # Training 
-
     #The beauty of PyTorch Lightning is that you can build a standard pipeline that you like and train (almost?) every model you might imagine. I prefer to use at least 3 components.
-
     #Checkpointing that saves the best model (based on validation loss):
 
     checkpoint_callback = ModelCheckpoint(
@@ -277,19 +270,20 @@ def train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module):
       progress_bar_refresh_rate=30
     )
 
-    return trainer.fit(model, data_module)
+    trainer.fit(model, data_module)
 
-train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module)
+    return trainer
 
 
-def create_model(LABEL_COLUMNS):
+
+def create_model(LABEL_COLUMNS, trainer):
     trained_model = TweetTagger.load_from_checkpoint(
     trainer.checkpoint_callback.best_model_path,
     n_classes=len(LABEL_COLUMNS)
     )
     return trained_model
 
-trained_model = create_model(LABEL_COLUMNS)
+
 
 
 # We put our model into “eval” mode, and we’re ready to make some predictions. Here’s the prediction on a sample (totally fictional) comment:

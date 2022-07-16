@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <link rel="stylesheet" href="style.css">
+  <script type="text/javascript" src="jquery-3.3.1.js"></script>
+</head>
+
+<!-- Header -->
+  <div class="topnav">
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+<!-- Tone logo -->
+<br><br><br>
+  <div class="logo">
+    <p align="center"><img src="tone.png", style="width:340px;height:200px;"></p>
+  </div>
+
+  <p text-align="center"><p style="width:500px;height:110px;">Promoting empathy among Twitter Users
+    to reduce offensive content that harms the wellness of users.</p></p>
+
+  <!-- Textbox and Button -->
+    <div class="form-box" style = "position:relative; left:10px; top:2px;">
+      <form name="form", action="https://awootud0zf.execute-api.us-west-2.amazonaws.com/Prod/sm-api" method="GET">
+        <p align="left"><textarea rows = "15" cols = "70", name="tweet" style="align=left"> Enter your tweet here! </textarea></p>
+        <p align="left"><button type = "submit" > submit tweet </button></p>
+      </form>
+      <p style = "text-align: left;"></p>
+    </div>
+
+<body>
+<div class="wrapper">
+  <div class="pie-charts">
+    <div class="pieID--operations pie-chart--wrapper">
+      <p align="left"><h2>Tone Representation</h2>
+      <div class="pie-chart">
+        <div class="pie-chart__pie"></div>
+        <ul class="pie-chart__legend">
+          <li><em>LGBTQ+ Phobic</em><span>0.50</span></li>
+          <li><em>Sexism</em><span>0.30</span></li>
+          <li><em>Racial Prejudice</em><span>0.10</span></li>
+          <li><em>Disability discrimination</em><span>0.10</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+<script src='https://codepen.io/MaciejCaputa/pen/EmMooZ.js'></script><script  src="./chart.js"></script>
+
+</body>
+</html>

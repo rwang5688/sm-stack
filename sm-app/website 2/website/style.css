@@ -1,0 +1,167 @@
+body {
+  font-family: "Open Sans", Arial;
+  background-image: linear-gradient(to right, #F5F8FA, #1DA1F2);
+}
+
+body * {
+  font-weight: 300;
+  margin: 0;
+  padding: 0;
+}
+
+.form-box {
+  text-align: center;
+  padding-top: 1%;
+}
+
+/* Add a black background color to the top navigation */
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #0C7BDC;
+  color: snow;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #0C7BDC;
+  color: white;
+}
+
+.main {
+  padding: 16px;
+  margin-top: 30px;
+  height: 1500px; /* Used in this example to enable scrolling */
+}
+
+/*
+This is the Section for the Pie Chart Representation.
+ */
+
+@-webkit-keyframes bake-pie {
+  from {
+    transform: rotate(0deg) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes bake-pie {
+  from {
+    transform: rotate(0deg) translate3d(0, 0, 0);
+  }
+}
+.pie-chart {
+  font-family: "Open Sans", Arial;
+}
+.pie-chart--wrapper {
+  width: 900px;
+  margin: -300px auto;
+  text-align: right;
+}
+.pie-chart__pie, .pie-chart__legend {
+  display: inline-block;
+  vertical-align: top;
+  width: 900px;
+  margin: 150px auto;
+}
+.pie-chart__pie {
+  position: relative;
+  height: 200px;
+  width: 200px;
+  margin: 10px auto 35px;
+}
+.pie-chart__pie::before {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: 1;
+  width: 100px;
+  height: 100px;
+  background: #EEE;
+  border-radius: 50%;
+  top: 50px;
+  left: 50px;
+}
+.pie-chart__pie::after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  box-shadow: 0 0 3px 4px rgba(0, 0, 0, 0.1);
+  margin: 220px auto;
+}
+
+.slice {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  clip: rect(0px, 200px, 200px, 100px);
+  -webkit-animation: bake-pie 1s;
+          animation: bake-pie 1s;
+}
+.slice span {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: black;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  clip: rect(0px, 200px, 200px, 100px);
+}
+
+.pie-chart__legend {
+  float: right;
+  display: block;
+  list-style-type: none;
+  padding: 0;
+  margin: 5000 auto;
+  background: #FFF;
+  padding: 0.75em 0.75em 0.05em;
+  font-size: 13px;
+  box-shadow: 1px 1px 0 #DDD, 2px 2px 0 #BBB;
+  text-align: left;
+  width: 25%;
+}
+.pie-chart__legend li {
+  height: 1.25em;
+  margin-bottom: 0.7em;
+  padding-left: 0.5em;
+  border-left: 1.25em solid black;
+}
+.pie-chart__legend em {
+  font-style: normal;
+}
+.pie-chart__legend span {
+  float: right;
+}
+
+.pie-charts {
+  display: flex;
+  flex-direction: row;
+}
+@media (max-width: 800px) {
+  .pie-charts {
+    flex-direction: column;
+  }
+}
