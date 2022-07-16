@@ -46,7 +46,7 @@ from create_model import predict_labels
 
 
 
-def model(x_train, y_train, x_test, y_test):
+def model(df):
     """Generate a simple model"""
     
     # make list of labeled columns
