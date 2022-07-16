@@ -25,41 +25,72 @@ from sklearn.metrics import classification_report, multilabel_confusion_matrix
 from pylab import rcParams
 from matplotlib import rc
 import re
+
 # import predefined functions
 from preprocessing import clean_data
 from preprocessing import split_data
+from preprocessing import to_int
+
 from create_model import label_cols
 from create_model import create_tokenizer
+from create_model import TweetsDataset
+from create_model import TweetsDataModule
+from create_model import create_data_module
+from create_model import TweetTagger
+from create_model import warmup_and_totaltraining_steps
+from create_model import train_model
+from create_model import create_model
+from create_model import predict_labels
+
+
+
+
 
 def model(x_train, y_train, x_test, y_test):
     """Generate a simple model"""
-
-    # preprocess data
-    clean_data(df, 'tweet')
-    # split data
-    train_df, val_df = split_data(df)
+    
     # make list of labeled columns
     LABEL_COLUMNS = label_cols(df)
+    
     # create BERT tokenizer
     tokenizer = create_tokenizer()
+    
+    # create data module 
+    data_module = create_data_module()
 
-    model = tokenizer
+    # train model 
+    warmup_steps, total_training_steps = warmup_and_totaltraining_steps(train_df)
+    train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module)
+
+    trainer = train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module)
+
+    model = create_model(LABEL_COLUMNS, trainer)
 
     return model
 
 
 def _load_training_data(base_dir):
     """Load MNIST training data"""
-    x_train = np.load(os.path.join(base_dir, 'train_data.npy'))
-    y_train = np.load(os.path.join(base_dir, 'train_labels.npy'))
-    return x_train, y_train
+    # preprocess data
+    #change this line from np.load to read_csv
+
+    df = pd.read_csv(os.path.join(base_dir, 'train_data.csv'))
+    
+    clean_data(df, 'tweet')
+
+    to_int(df)
+    
+    # split data
+    train_df, val_df = split_data(df)
+    
+    return train_df, val_df
 
 
-def _load_testing_data(base_dir):
-    """Load MNIST testing data"""
-    x_test = np.load(os.path.join(base_dir, 'eval_data.npy'))
-    y_test = np.load(os.path.join(base_dir, 'eval_labels.npy'))
-    return x_test, y_test
+# def _load_testing_data(base_dir):
+#     """Load MNIST testing data"""
+#     x_test = np.load(os.path.join(base_dir, 'eval_data.npy'))
+#     y_test = np.load(os.path.join(base_dir, 'eval_labels.npy'))
+#     return x_test, y_test
 
 
 def _parse_args():
@@ -79,10 +110,10 @@ def _parse_args():
 if __name__ == "__main__":
     args, unknown = _parse_args()
 
-    train_data, train_labels = _load_training_data(args.train)
-    eval_data, eval_labels = _load_testing_data(args.train)
+    train_data, val_data = _load_training_data(args.train)
+    # eval_data  = _load_testing_data(args.train)
 
-    multibert_classifier = model(train_data, train_labels, eval_data, eval_labels)
+    multibert_classifier = model(train_data, val_data)
 
     if args.current_host == args.hosts[0]:
         # save model to an S3 directory with version number '00000001' in Tensorflow SavedModel Format
