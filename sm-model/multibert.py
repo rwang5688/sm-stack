@@ -29,6 +29,7 @@ import re
 # import predefined functions
 from preprocessing import clean_data
 from preprocessing import split_data
+from preprocessing import to_int
 
 from create_model import label_cols
 from create_model import create_tokenizer
@@ -76,6 +77,8 @@ def _load_training_data(base_dir):
     df = pd.read_csv(os.path.join(base_dir, 'train_data.csv'))
     
     clean_data(df, 'tweet')
+
+    to_int(df)
     
     # split data
     train_df, val_df = split_data(df)
