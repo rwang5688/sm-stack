@@ -37,7 +37,7 @@ def lambda_handler(event, context):
     print("message: %s" % (message))
 
     # replace with your actual endpoint_name
-    endpoint_name = 'distilbert-text-classification-ep-2022-07-14-05-58-59'
+    endpoint_name = 'distilbert-text-classification-ep-2022-07-15-23-54-36'
     response = sm_util.invoke_endpoint(endpoint_name, message)
     print("response: %s" % json.dumps(response, indent=2))
 
