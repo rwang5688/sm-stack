@@ -4,6 +4,26 @@ import numpy as np
 import re
 from sklearn.model_selection import train_test_split
 
+from tqdm.auto import tqdm
+import torch
+
+import torchmetrics
+import torch.nn as nn
+from torch.utils.data import Dataset, DataLoader
+from transformers import BertTokenizerFast as BertTokenizer, BertModel, AdamW, get_linear_schedule_with_warmup
+
+import pytorch_lightning as pl
+from torchmetrics.functional import accuracy, auroc
+from torchmetrics.functional import f1_score
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
+from pytorch_lightning.loggers import TensorBoardLogger
+
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, multilabel_confusion_matrix
+from pylab import rcParams
+from matplotlib import rc
+import re
+
 
 def clean_data(dataframe, column):
     """cleans the data by remove urls from any tweets, remove usernames ("@etc"), emojis, and remove all numbers"""
@@ -31,5 +51,14 @@ def split_data(dataframe):
     """splits the dataframe into train and test dataframes"""
     train_df, val_df = train_test_split(dataframe, test_size=0.10)
     return train_df, val_df
+
+
+def to_int(df):
+    # change all category types to int
+    df.loc[:,'general criticsm']=df.loc[:,'general criticsm'].astype(int)
+    df.loc[:,'disability shaming']=df.loc[:,'disability shaming'].astype(int)
+    df.loc[:,'racial prejudice']=df.loc[:,'racial prejudice'].astype(int)
+    df.loc[:,'sexism']=df.loc[:,'sexism'].astype(int)
+    df.loc[:,'lgbtq+ phobia']=df.loc[:,'lgbtq+ phobia'].astype(int)
 
 

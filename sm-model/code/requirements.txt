@@ -3,4 +3,4 @@ watermark
 transformers
 pytorch-lightning
 colored
-
+torchmetrics
