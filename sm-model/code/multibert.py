@@ -46,7 +46,7 @@ from create_model import predict_labels
 
 
 
-def model(x_train, y_train, x_test, y_test):
+def model(df):
     """Generate a simple model"""
     
     # make list of labeled columns
@@ -70,11 +70,11 @@ def model(x_train, y_train, x_test, y_test):
 
 
 def _load_training_data(base_dir):
-    """Load MNIST training data"""
+    """Load Twitter training data"""
     # preprocess data
     #change this line from np.load to read_csv
 
-    df = pd.read_csv(os.path.join(base_dir, 'train_data.csv'))
+    df = pd.read_csv(os.path.join(base_dir, 'multi_label_new.csv'))
     
     clean_data(df, 'tweet')
 

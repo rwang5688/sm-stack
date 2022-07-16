@@ -1,8 +1,8 @@
-!pip install torch
-!pip install watermark
-!pip install transformers
-!pip install --upgrade pytorch-lightning
-!pip install colored
+# !pip install torch
+# !pip install watermark
+# !pip install transformers
+# !pip install --upgrade pytorch-lightning
+# !pip install colored
 
 import sys
 import pandas as pd
@@ -26,6 +26,8 @@ from sklearn.metrics import classification_report, multilabel_confusion_matrix
 from pylab import rcParams
 from matplotlib import rc
 import re
+
+
 
 # import predefined functions
 from preprocessing import clean_data
