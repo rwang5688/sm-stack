@@ -37,20 +37,28 @@ from preprocessing import split_data
 #load cased-BERT model and tokenizer 
 
 def label_cols(dataframe):
+    """creates list with label names"""
+    print(f'label_cols_input: dataframe: {dataframe.head(10)}')
+    
     LABEL_COLUMNS = dataframe.columns.tolist()[2:]
+    
+    print(f'label_cols_output: {LABEL_COLUMNS}')
+    
     return LABEL_COLUMNS
 
-LABEL_COLUMNS = label_cols(df)
+#LABEL_COLUMNS = label_cols(df)
 
 
 
 def create_tokenizer():
+    """creates BERT tokenizer"""
     model = 'bert-base-cased'
     BERT_MODEL_NAME = 'bert-base-cased'
     tokenizer = BertTokenizer.from_pretrained(BERT_MODEL_NAME)
+    print(f'create_tokenizer_output: tokenizer: {tokenizer}')
     return tokenizer 
 
-tokenizer = create_tokenizer()
+#tokenizer = create_tokenizer()
 
 class TweetsDataset(Dataset):
     def __init__(
@@ -128,7 +136,12 @@ class TweetsDataModule(pl.LightningDataModule):
 # TweetsDataModule encapsulates all data loading logic and returns the necessary data loaders. Let’s create an instance of our data module:
 
 
-def create_data_module():
+def create_data_module(train_df, val_df, tokenizer):
+    """creates data module for twitter dataset"""
+    
+    print(f'create_data_module_input: train_df: {train_df.head(10)}')
+    print(f'create_data_module_input: val_df: {val_df.head(10)}')
+    
     MAX_TOKEN_COUNT = 60
     N_EPOCHS = 4
     BATCH_SIZE = 32
@@ -139,9 +152,12 @@ def create_data_module():
       batch_size=BATCH_SIZE,
       max_token_len=MAX_TOKEN_COUNT
     )
+    
+    print(f'create_data_module_output: data_module: {data_module}')
+    
     return data_module
 
-data_module = create_data_module()
+#data_module = create_data_module()
 
 
 #Our model will use a pre-trained BertModel and a linear layer to convert the BERT representation to a classification task. We’ll pack everything in a LightningModule:
@@ -149,6 +165,7 @@ data_module = create_data_module()
 
 class TweetTagger(pl.LightningModule):
     def __init__(self, n_classes: int, n_training_steps=None, n_warmup_steps=None):
+        BERT_MODEL_NAME = 'bert-base-cased'
         super().__init__()
         self.bert = BertModel.from_pretrained(BERT_MODEL_NAME, return_dict=True)
         self.classifier = nn.Linear(self.bert.config.hidden_size, n_classes)
@@ -228,12 +245,17 @@ def warmup_and_totaltraining_steps(dataframe):
     warmup_steps = total_training_steps // 5
     return warmup_steps, total_training_steps
 
-warmup_steps, total_training_steps = warmup_and_totaltraining_steps(train_df)
+#warmup_steps, total_training_steps = warmup_and_totaltraining_steps(train_df)
 
 
 # TRAINING
 def train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module):
-
+    """trains BERT model"""
+    
+    print(f'train_model_input: LABEL_COLUMNS: {LABEL_COLUMNS}')
+    print(f'train_model_input: warmup_steps: {warmup_steps}')
+    print(f'train_model_input: total_training_steps: {total_training_steps}')
+    print(f'train_model_input: data_module: {data_module}')
     
     model = TweetTagger(
       n_classes=len(LABEL_COLUMNS),
@@ -273,16 +295,26 @@ def train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module):
     )
 
     trainer.fit(model, data_module)
+    
+    print(f'train_model_output: trainer: {trainer}')
 
     return trainer
 
 
 
 def create_model(LABEL_COLUMNS, trainer):
+    """create model using TweetTagger"""
+    
+    print(f'create_model_input: LABEL_COLUMNS: {LABEL_COLUMNS}')
+    print(f'create_model_input: trainer: {trainer}')
+    
     trained_model = TweetTagger.load_from_checkpoint(
     trainer.checkpoint_callback.best_model_path,
     n_classes=len(LABEL_COLUMNS)
     )
+    
+    print(f'create_model_output: trained_model: {trained_model}')
+    
     return trained_model
 
 

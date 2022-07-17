@@ -52,19 +52,41 @@ def model(df):
     # make list of labeled columns
     LABEL_COLUMNS = label_cols(df)
     
+    print('label_cols completed!')
+    print("="*100)
+    
     # create BERT tokenizer
     tokenizer = create_tokenizer()
     
+    print('create_tokenizer completed!')
+    print("="*100)
+    
     # create data module 
-    data_module = create_data_module()
+    data_module = create_data_module(train_df, val_df, tokenizer)
+    
+    print('create_data_module completed!')
+    print("="*100)
 
     # train model 
     warmup_steps, total_training_steps = warmup_and_totaltraining_steps(train_df)
+    
+    print('warmup_and_totaltraining_steps completed!')
+    print('='*100)
+    
     train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module)
+          
+    print('train_model completed!')
+    print('='*100)
 
     trainer = train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module)
+    
+    print('train_model completed!')
+    print('='*100)
 
     model = create_model(LABEL_COLUMNS, trainer)
+    
+    print('create_model completed!')
+    print('='*100)
 
     return model
 
@@ -77,11 +99,20 @@ def _load_training_data(base_dir):
     df = pd.read_csv(os.path.join(base_dir, 'multi_label_new.csv'))
     
     clean_data(df, 'tweet')
+    
+    print('clean_data completed!')
+    print('='*100)
 
     to_int(df)
     
+    print('to_int completed!')
+    print('='*50)
+    
     # split data
     train_df, val_df = split_data(df)
+    
+    print('split_data completed!')
+    print('='*100)
     
     return train_df, val_df
 
@@ -110,10 +141,10 @@ def _parse_args():
 if __name__ == "__main__":
     args, unknown = _parse_args()
 
-    train_data, val_data = _load_training_data(args.train)
+    train_df, val_df = _load_training_data(args.train)
     # eval_data  = _load_testing_data(args.train)
 
-    multibert_classifier = model(train_data, val_data)
+    multibert_classifier = model(train_df)
 
     if args.current_host == args.hosts[0]:
         # save model to an S3 directory with version number '00000001' in Tensorflow SavedModel Format
