@@ -70,12 +70,13 @@ class TweetsDataset(Dataset):
         self.tokenizer = tokenizer
         self.data = data
         self.max_token_len = max_token_len
+        self.LABEL_COLUMNS = ['disability shaming', 'racial prejudice', 'sexism', 'lgbtq+ phobia']
     def __len__(self):
         return len(self.data)
     def __getitem__(self, index: int):
         data_row = self.data.iloc[index]
         comment_text = data_row.tweet
-        labels = data_row[LABEL_COLUMNS]
+        labels = data_row[self.LABEL_COLUMNS]
         encoding = self.tokenizer.encode_plus(
           comment_text,
           add_special_tokens=True,
@@ -252,6 +253,7 @@ def warmup_and_totaltraining_steps(dataframe):
 def train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module):
     """trains BERT model"""
     
+    N_EPOCHS =4
     print(f'train_model_input: LABEL_COLUMNS: {LABEL_COLUMNS}')
     print(f'train_model_input: warmup_steps: {warmup_steps}')
     print(f'train_model_input: total_training_steps: {total_training_steps}')
@@ -283,16 +285,25 @@ def train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module):
 
     early_stopping_callback = EarlyStopping(monitor='val_loss', patience=2)
 
-
-    # We can start the training process:
+#gpus =1
+# accelerator = 'gpu'
 
     trainer = pl.Trainer(
       checkpoint_callback=checkpoint_callback,
       callbacks=[early_stopping_callback],
-      max_epochs=N_EPOCHS,
-      gpus=1,
+      max_epochs=N_EPOCHS, gpus =1,
       progress_bar_refresh_rate=30
     )
+
+
+    # We can start the training process:
+
+#     trainer = pl.Trainer(
+#       checkpoint_callback=checkpoint_callback,
+#       callbacks=[early_stopping_callback],
+#       max_epochs=N_EPOCHS, devices=3, accelerator="gpu",
+#       progress_bar_refresh_rate=30
+#     )
 
     trainer.fit(model, data_module)
     
