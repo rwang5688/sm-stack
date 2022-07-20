@@ -27,21 +27,12 @@ from matplotlib import rc
 import re
 
 # import predefined functions
-from preprocessing import clean_data
-from preprocessing import split_data
-from preprocessing import to_int
+from preprocessing import clean_data, split_data, to_int
 
-from create_model import label_cols
-from create_model import create_tokenizer
-from create_model import TweetsDataset
-from create_model import TweetsDataModule
-from create_model import create_data_module
-from create_model import TweetTagger
-from create_model import warmup_and_totaltraining_steps
-from create_model import train_model
-from create_model import create_model
-from create_model import predict_labels
-
+from create_model import (
+    label_cols, create_tokenizer, create_data_module, 
+    warmup_and_totaltraining_steps, train_model, create_model, predict_labels
+)
 
 
 
@@ -73,10 +64,10 @@ def model(df):
     print('warmup_and_totaltraining_steps completed!')
     print('='*100)
     
-    train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module)
+#     train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module)
           
-    print('train_model completed!')
-    print('='*100)
+#     print('train_model completed!')
+#     print('='*100)
 
     trainer = train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module)
     
@@ -98,12 +89,12 @@ def _load_training_data(base_dir):
 
     df = pd.read_csv(os.path.join(base_dir, 'multi_label_new.csv'))
     
-    clean_data(df, 'tweet')
+    df = clean_data(df, 'tweet')
     
     print('clean_data completed!')
     print('='*100)
 
-    to_int(df)
+    df = to_int(df)
     
     print('to_int completed!')
     print('='*50)
@@ -149,5 +140,6 @@ if __name__ == "__main__":
     if args.current_host == args.hosts[0]:
         # save model to an S3 directory with version number '00000001' in Tensorflow SavedModel Format
         # To export the model as h5 format use model.save('my_model.h5')
-        multibert_classifier.save(os.path.join(args.sm_model_dir, '000000001'))
+#         multibert_classifier.save(os.path.join(args.sm_model_dir, '000000001'))
+        torch.save(multibert_classifier.state_dict(), os.path.join(args.sm_model_dir, '000000001'))
 
