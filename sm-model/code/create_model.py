@@ -40,7 +40,7 @@ def label_cols(dataframe):
     """creates list with label names"""
     print(f'label_cols_input: dataframe: {dataframe.head(10)}')
     
-    LABEL_COLUMNS = dataframe.columns.tolist()[2:]
+    LABEL_COLUMNS = dataframe.columns.tolist()[1:]
     
     print(f'label_cols_output: {LABEL_COLUMNS}')
     
@@ -70,7 +70,7 @@ class TweetsDataset(Dataset):
         self.tokenizer = tokenizer
         self.data = data
         self.max_token_len = max_token_len
-        self.LABEL_COLUMNS = ['disability shaming', 'racial prejudice', 'sexism', 'lgbtq+ phobia']
+        self.LABEL_COLUMNS = ['general criticsm','disability shaming', 'racial prejudice', 'sexism', 'lgbtq+ phobia']
     def __len__(self):
         return len(self.data)
     def __getitem__(self, index: int):
@@ -95,7 +95,7 @@ class TweetsDataset(Dataset):
         )
 
 class TweetsDataModule(pl.LightningDataModule):
-    def __init__(self, train_df, test_df, tokenizer, batch_size=8, max_token_len=128):
+    def __init__(self, train_df, test_df, tokenizer, batch_size=32, max_token_len=60):
         super().__init__()
         self.batch_size = batch_size
         self.train_df = train_df
@@ -166,6 +166,7 @@ def create_data_module(train_df, val_df, tokenizer):
 
 class TweetTagger(pl.LightningModule):
     def __init__(self, n_classes: int, n_training_steps=None, n_warmup_steps=None):
+        self.LABEL_COLUMNS = ['general criticsm','disability shaming', 'racial prejudice', 'sexism', 'lgbtq+ phobia']
         BERT_MODEL_NAME = 'bert-base-cased'
         super().__init__()
         self.bert = BertModel.from_pretrained(BERT_MODEL_NAME, return_dict=True)
@@ -210,11 +211,12 @@ class TweetTagger(pl.LightningModule):
                 labels.append(out_labels)
             for out_predictions in output["predictions"].detach().cpu():
                 predictions.append(out_predictions)
-                labels = torch.stack(labels).int()
-                predictions = torch.stack(predictions)
-            for i, name in enumerate(LABEL_COLUMNS):
-                class_roc_auc = auroc(predictions[:, i], labels[:, i])
-                self.logger.experiment.add_scalar(f"{name}_roc_auc/Train", class_roc_auc, self.current_epoch)
+        labels = torch.stack(labels).int()
+        predictions = torch.stack(predictions)
+        for i, name in enumerate(self.LABEL_COLUMNS):
+            class_roc_auc = auroc(predictions[:, i], labels[:, i])
+            self.logger.experiment.add_scalar(f"{name}_roc_auc/Train", class_roc_auc, self.current_epoch)
+
     def configure_optimizers(self):
         optimizer = AdamW(self.parameters(), lr=2e-5)
         scheduler = get_linear_schedule_with_warmup(
@@ -254,10 +256,10 @@ def train_model(LABEL_COLUMNS, warmup_steps, total_training_steps, data_module):
     """trains BERT model"""
     
     N_EPOCHS =4
-    print(f'train_model_input: LABEL_COLUMNS: {LABEL_COLUMNS}')
-    print(f'train_model_input: warmup_steps: {warmup_steps}')
-    print(f'train_model_input: total_training_steps: {total_training_steps}')
-    print(f'train_model_input: data_module: {data_module}')
+#     print(f'train_model_input: LABEL_COLUMNS: {LABEL_COLUMNS}')
+#     print(f'train_model_input: warmup_steps: {warmup_steps}')
+#     print(f'train_model_input: total_training_steps: {total_training_steps}')
+#     print(f'train_model_input: data_module: {data_module}')
     
     model = TweetTagger(
       n_classes=len(LABEL_COLUMNS),

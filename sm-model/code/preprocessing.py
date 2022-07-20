@@ -78,5 +78,7 @@ def to_int(dataframe):
     dataframe.loc[:,'racial prejudice']=dataframe.loc[:,'racial prejudice'].astype(int)
     dataframe.loc[:,'sexism']=dataframe.loc[:,'sexism'].astype(int)
     dataframe.loc[:,'lgbtq+ phobia']=dataframe.loc[:,'lgbtq+ phobia'].astype(int)
-
+    
+    
     print(f'to_int_output: dataframe: {dataframe.head(10)}')
+    return dataframe
