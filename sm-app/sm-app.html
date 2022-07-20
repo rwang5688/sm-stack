@@ -16,16 +16,16 @@
 
         var options = {
           title: 'My Daily Activities',
-          is3D: true,
+          pieHole: 0.4,
         };
 
-        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
         chart.draw(data, options);
       }
     </script>
   </head>
   <body>
-    <form action="https://awootud0zf.execute-api.us-west-2.amazonaws.com/Prod/sm-api" method="GET">
+    <form action="https://hxvb7l2awb.execute-api.us-west-2.amazonaws.com/Prod/sm-api" method="GET">
       <div>
           <label for="message">What message do you want to tweet?</label>
           <input name="message" id="message" value="Hello World!">
@@ -33,7 +33,7 @@
       <div>
           <button>Send message</button>
       </div>
-      <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+      <div id="donutchart" style="width: 900px; height: 500px;"></div>
     </form>
   </body>
 </html>
